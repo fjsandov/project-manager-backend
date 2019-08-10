@@ -1,0 +1,1 @@
+Figaro.require_keys('devise_jwt_secret_key')
