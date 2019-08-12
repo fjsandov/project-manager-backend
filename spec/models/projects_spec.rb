@@ -21,13 +21,19 @@ RSpec.describe Project, type: :model do
     it { should belong_to(:user) }
   end
 
+  it 'is invalid if it ends before it starts' do
+    now = DateTime.now
+    project = build(:project, user: create(:user), start_at: now, end_at: now - 1.year)
+    expect(project).not_to be_valid
+  end
+
   context 'when a new project is defined' do
     context 'when is the same owner' do
       before(:all) do
         @another_project = build(:project, user: @project.user)
       end
 
-      it 'is is invalid with same type and dates' do
+      it 'is invalid if has the same type and has dates overlap' do
         expect(@another_project).not_to be_valid
       end
 
@@ -42,7 +48,7 @@ RSpec.describe Project, type: :model do
         @another_project = create(:project)
       end
 
-      it 'is is valid with same type and dates' do
+      it 'is valid with same type and dates' do
         expect(@another_project).to be_valid
       end
     end
