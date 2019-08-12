@@ -96,3 +96,6 @@ yarn-debug.log*
 
 ### RubyMine ###
 .idea/*
+
+# Ignore application configuration
+/config/application.yml
