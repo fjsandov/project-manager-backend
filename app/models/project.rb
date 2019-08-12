@@ -4,11 +4,11 @@ class Project < ApplicationRecord
   validate :check_overlap, on: :create
 
   def check_overlap
-    if Project.exists?(['project_type = ? AND ? BETWEEN start_at AND end_at', project_type, start_at])
+    if Project.exists?(['user_id = ? AND project_type = ? AND ? BETWEEN start_at AND end_at', user_id, project_type, start_at])
       errors.add(:start_at, 'overlaps with another project of the same type')
-    elsif Project.exists?(['project_type = ? AND ? BETWEEN start_at AND end_at', project_type, end_at])
+    elsif Project.exists?(['user_id = ? AND project_type = ? AND ? BETWEEN start_at AND end_at', user_id, project_type, end_at])
       errors.add(:end_at, 'overlaps with another project of the same type')
-    elsif Project.exists?(['project_type = ? AND start_at > ? AND end_at < ?', project_type, start_at, end_at])
+    elsif Project.exists?(['user_id = ? AND project_type = ? AND start_at > ? AND end_at < ?', user_id, project_type, start_at, end_at])
       errors.add(:base, 'overlaps with another project of the same type completely')
     end
   end
