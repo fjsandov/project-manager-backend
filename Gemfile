@@ -42,9 +42,9 @@ group :development, :test do
 end
 
 group :test do
-  gem 'shoulda-matchers', '~> 3.1', require: false
+  gem 'shoulda-matchers'
   gem 'database_cleaner'
-  gem 'faker', '~> 1.6.1'
+  gem 'faker'
   gem 'factory_bot_rails'
 end
 
