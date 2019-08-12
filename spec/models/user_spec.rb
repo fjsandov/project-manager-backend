@@ -1,25 +1,44 @@
-require "rails_helper"
-RSpec.describe User, :type => :model do
+require 'rails_helper'
+
+user_email = 'test-user-1@example.org'
+
+RSpec.describe User, type: :model do
   before(:all) do
-    @user1 = create(:user)
+    @user = create(:user, email: user_email)
   end
 
-  it "is valid with valid attributes" do
-    expect(@user1).to be_valid
+  it 'is valid with valid attributes' do
+    expect(@user).to be_valid
   end
 
-  it "has a unique email" do
-    user2 = build(:user, username: "Bob")
-    expect(user2).to_not be_valid
+  describe 'simple validations' do
+    it { should validate_presence_of(:email) }
+    it { should validate_presence_of(:password) }
   end
 
-  it "is not valid without a password" do
-    user2 = build(:user, password: nil)
-    expect(user2).to_not be_valid
+  describe 'associations' do
+    it { should have_many(:projects) }
   end
 
-  it "is not valid without an email" do
-    user2 = build(:user, email: nil)
-    expect(user2).to_not be_valid
+  describe '#email' do
+    it { should_not allow_value('not-an-email').for(:email) }
+    it { should allow_value('correct@format.com').for(:email) }
+  end
+
+  describe '#password' do
+    it { should_not allow_value('short').for(:password) }
+    it { should allow_value('not-a-short-password').for(:password) }
+  end
+
+  context 'when a new user is defined' do
+    it 'is valid with another email' do
+      another_user = build(:user)
+      expect(another_user).to be_valid
+    end
+
+    it 'has a unique email' do
+      another_user = build(:user, email: user_email)
+      expect(another_user).not_to be_valid
+    end
   end
 end
