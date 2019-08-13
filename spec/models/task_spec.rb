@@ -13,11 +13,11 @@ RSpec.describe Task, type: :model do
     it { should validate_presence_of(:title) }
     describe '#priority' do
       it { should validate_presence_of(:priority)  }
-      it { should define_enum_for(:priority).with_values(%i(high medium low)) }
+      it { should validate_inclusion_of(:priority).in_array(%i(high medium low)) }
     end
     describe '#status' do
       it { should validate_presence_of(:status) }
-      it { should define_enum_for(:status).with_values(%i(pending working done)) }
+      it { should validate_inclusion_of(:status).in_array(%i(pending working done)) }
     end
     it { should validate_presence_of(:project_id) }
   end

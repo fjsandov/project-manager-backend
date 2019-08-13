@@ -1,30 +1,32 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: [:show, :update, :destroy]
+  actions_with_task = %i(show update destroy)
+  before_action :set_project, except: actions_with_task
+  before_action :set_project_and_task, only: actions_with_task
 
-  # GET /tasks
+  # GET /project/1/tasks
   def index
-    @tasks = Task.all
-
+    @tasks = @project.tasks.all
     render json: @tasks
   end
 
-  # GET /tasks/1
+  # GET /projects/1/tasks/1
   def show
     render json: @task
   end
 
-  # POST /tasks
+  # POST /projects/1/tasks
   def create
     @task = Task.new(task_params)
+    @task.project = @project
 
     if @task.save
-      render json: @task, status: :created, location: @task
+      render json: @task, status: :created, location: url_for([@project, @task])
     else
       render json: @task.errors, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /tasks/1
+  # PATCH/PUT /projects/1/tasks/1
   def update
     if @task.update(task_params)
       render json: @task
@@ -33,19 +35,23 @@ class TasksController < ApplicationController
     end
   end
 
-  # DELETE /tasks/1
+  # DELETE /projects/1/tasks/1
   def destroy
     @task.destroy
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_task
-      @task = Task.find(params[:id])
+    def set_project
+      @project = Project.find(params[:project_id])
+    end
+
+    def set_project_and_task
+      @project = Project.find(params[:project_id])
+      @task = @project.tasks.find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.
     def task_params
-      params.require(:task).permit(:title, :description, :priority, :deadline, :status, :project_id)
+      params.require(:task).permit(:title, :description, :priority, :deadline, :status)
     end
 end
