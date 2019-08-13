@@ -1,5 +1,6 @@
 class Task < ApplicationRecord
   belongs_to :project
+  has_many :comments, as: :commentable
 
   validates :title, :status, :priority, :project_id, presence: true
   validates :priority, inclusion: { in: %w(high medium low) }

@@ -5,7 +5,7 @@ class TasksController < ApplicationController
 
   # GET /project/1/tasks
   def index
-    @tasks = @project.tasks.all
+    @tasks = @project.tasks
     render json: @tasks
   end
 
@@ -16,8 +16,7 @@ class TasksController < ApplicationController
 
   # POST /projects/1/tasks
   def create
-    @task = Task.new(task_params)
-    @task.project = @project
+    @task = @project.tasks.new(task_params)
 
     if @task.save
       render json: @task, status: :created, location: url_for([@project, @task])

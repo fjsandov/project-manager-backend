@@ -1,4 +1,11 @@
 Rails.application.routes.draw do
+  resources :projects do
+    resources :comments, module: :projects
+    resources :tasks do
+      resources :comments, module: :tasks
+    end
+  end
+
   devise_for :users,
     path: '',
     path_names: {
@@ -10,8 +17,4 @@ Rails.application.routes.draw do
       sessions: :sessions,
       registrations: :registrations
     }
-
-  resources :projects do
-    resources :tasks
-  end
 end

@@ -17,6 +17,7 @@ RSpec.describe Project, type: :model do
   describe 'associations' do
     it { should belong_to(:user) }
     it { should have_many(:tasks) }
+    it { should have_many(:comments) }
   end
 
   it 'is invalid if it ends before it starts' do
