@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_12_235633) do
+ActiveRecord::Schema.define(version: 2019_08_13_004625) do
 
   create_table "jwt_blacklist", force: :cascade do |t|
     t.string "jti", null: false
@@ -32,9 +32,9 @@ ActiveRecord::Schema.define(version: 2019_08_12_235633) do
   create_table "tasks", force: :cascade do |t|
     t.string "title"
     t.text "description"
-    t.string "priority"
+    t.integer "priority"
     t.datetime "deadline"
-    t.string "status"
+    t.integer "status"
     t.integer "project_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
