@@ -1,7 +1,9 @@
 class Project < ApplicationRecord
   belongs_to :user
+  has_many :tasks
+
   validates :name, :project_type, :start_at, :end_at, :user_id, presence: true
-  validate :check_starts_before_ends, :check_overlap, on: :create
+  validate :check_starts_before_ends, :check_overlap
 
   def check_starts_before_ends
     return if start_at.blank? or end_at.blank?
@@ -10,12 +12,14 @@ class Project < ApplicationRecord
 
   def check_overlap
     return unless [user_id, project_type, start_at, end_at].all?
-    if Project.exists?(['user_id = ? AND project_type = ? AND ? BETWEEN start_at AND end_at', user_id, project_type, start_at])
-      errors.add(:start_at, 'overlaps with another project of the same type')
-    elsif Project.exists?(['user_id = ? AND project_type = ? AND ? BETWEEN start_at AND end_at', user_id, project_type, end_at])
-      errors.add(:end_at, 'overlaps with another project of the same type')
-    elsif Project.exists?(['user_id = ? AND project_type = ? AND start_at > ? AND end_at < ?', user_id, project_type, start_at, end_at])
-      errors.add(:base, 'overlaps with another project of the same type completely')
+    if id.present?
+      if Project.exists?(['id != ? AND user_id = ? AND project_type = ? AND end_at > ? AND ? > start_at', id, user_id, project_type, start_at, end_at])
+        errors.add(:base, 'overlaps with another project of the same type')
+      end
+    else
+      if Project.exists?(['user_id = ? AND project_type = ? AND end_at > ? AND ? > start_at', user_id, project_type, start_at, end_at])
+        errors.add(:base, 'overlaps with another project of the same type')
+      end
     end
   end
 end

@@ -19,6 +19,7 @@ RSpec.describe Project, type: :model do
 
   describe 'associations' do
     it { should belong_to(:user) }
+    it { should have_many(:tasks) }
   end
 
   it 'is invalid if it ends before it starts' do
@@ -33,13 +34,27 @@ RSpec.describe Project, type: :model do
         @another_project = build(:project, user: @project.user)
       end
 
-      it 'is invalid if has the same type and has dates overlap' do
-        expect(@another_project).not_to be_valid
-      end
+      describe 'it checks overlap cases' do
+        it 'is invalid if has the same type and has dates overlap' do
+          expect(@another_project).not_to be_valid
+        end
 
-      it 'is valid with another type' do
-        @another_project.project_type = 'personal'
-        expect(@another_project).to be_valid
+        it 'is valid if has the same type but has dates before the existent one' do
+          @another_project.start_at = @project.start_at - 1.year
+          @another_project.end_at = @project.start_at - 1.second
+          expect(@another_project).to be_valid
+        end
+
+        it 'is valid if has the same type but has dates before the existent one' do
+          @another_project.start_at = @project.end_at + 1.second
+          @another_project.end_at = @project.end_at + 1.year
+          expect(@another_project).to be_valid
+        end
+
+        it 'is valid with another type' do
+          @another_project.project_type = 'personal'
+          expect(@another_project).to be_valid
+        end
       end
     end
 
