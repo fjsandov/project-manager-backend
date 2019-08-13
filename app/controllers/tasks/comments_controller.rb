@@ -4,7 +4,7 @@ class Tasks::CommentsController < CommentsController
   private
   def set_commentable
     @project = current_user.projects.find(params[:project_id])
-    @commentable = project.tasks.find(params[:task_id])
+    @commentable = @project.tasks.find(params[:task_id])
   end
 
   def comment_location
