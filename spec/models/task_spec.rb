@@ -11,8 +11,14 @@ RSpec.describe Task, type: :model do
 
   describe 'simple validations' do
     it { should validate_presence_of(:title) }
-    it { should validate_presence_of(:status) }
-    it { should define_enum_for(:status).with_values([:high, :medium, :low])  }
+    describe '#priority' do
+      it { should validate_presence_of(:priority)  }
+      it { should define_enum_for(:priority).with_values(%i(high medium low)) }
+    end
+    describe '#status' do
+      it { should validate_presence_of(:status) }
+      it { should define_enum_for(:status).with_values(%i(pending working done)) }
+    end
     it { should validate_presence_of(:project_id) }
   end
 
@@ -22,7 +28,7 @@ RSpec.describe Task, type: :model do
 
   it 'is invalid if the deadline is after the project ends' do
     now = DateTime.now
-    project = build(:project, start_at: now.beginning_of_year, end_at: now.end_of_year)
+    project = create(:project, start_at: now.beginning_of_year, end_at: now.end_of_year)
     task = build(:task, project: project, deadline: now + 2.years)
     expect(task).not_to be_valid
   end
