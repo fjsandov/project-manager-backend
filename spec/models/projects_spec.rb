@@ -17,6 +17,7 @@ RSpec.describe Project, type: :model do
   describe 'associations' do
     it { should belong_to(:user) }
     it { should have_many(:tasks) }
+    it { should have_many(:comments) }
   end
 
   it 'is invalid if it ends before it starts' do
@@ -52,7 +53,7 @@ RSpec.describe Project, type: :model do
       subject { another_project }
 
       describe 'it checks overlap cases' do
-        describe 'invalid if has the same type and has dates overlap' do
+        describe 'has the same type and has dates overlap' do
           it { should_not be_valid }
         end
 
