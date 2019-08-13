@@ -1,13 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Project, type: :model do
-  before(:all) do
-    @project = create(:project)
-  end
+  let(:project) { create(:project) }
+  subject { project }
 
-  it 'is valid with valid attributes' do
-    expect(@project).to be_valid
-  end
+  it { should be_valid }
 
   describe 'simple validations' do
     it { should validate_presence_of(:name) }
@@ -24,47 +21,57 @@ RSpec.describe Project, type: :model do
 
   it 'is invalid if it ends before it starts' do
     now = DateTime.now
-    project = build(:project, user: create(:user), start_at: now, end_at: now - 1.year)
-    expect(project).not_to be_valid
+    another_user = create(:user)
+    another_project = build(:project, user: another_user, start_at: now, end_at: now - 1.year)
+    expect(another_project).not_to be_valid
   end
 
   context 'when a new project is defined' do
-    context 'when is the same owner' do
-      before(:all) do
-        @another_project = build(:project, user: @project.user)
-      end
+    let(:another_project) { create(:project) }
+    subject { another_project }
 
-      describe 'it checks overlap cases' do
-        it 'is invalid if has the same type and has dates overlap' do
-          expect(@another_project).not_to be_valid
-        end
-
-        it 'is valid if has the same type but has dates before the existent one' do
-          @another_project.start_at = @project.start_at - 1.year
-          @another_project.end_at = @project.start_at - 1.second
-          expect(@another_project).to be_valid
-        end
-
-        it 'is valid if has the same type but has dates before the existent one' do
-          @another_project.start_at = @project.end_at + 1.second
-          @another_project.end_at = @project.end_at + 1.year
-          expect(@another_project).to be_valid
-        end
-
-        it 'is valid with another type' do
-          @another_project.project_type = 'personal'
-          expect(@another_project).to be_valid
-        end
+    context 'when is a different owner' do
+      describe 'has same type and dates' do
+        it { should be_valid }
       end
     end
 
-    context 'when is a different owner' do
-      before(:all) do
-        @another_project = create(:project)
-      end
+    context 'when is the same owner' do
+      let(:project_type) { project.project_type }
+      let(:start_at) { project.start_at }
+      let(:end_at) { project.end_at }
+      let(:another_project) {
+        build(
+          :project,
+          user: project.user,
+          project_type: project_type,
+          start_at: start_at,
+          end_at: end_at,
+        )
+      }
+      subject { another_project }
 
-      it 'is valid with same type and dates' do
-        expect(@another_project).to be_valid
+      describe 'it checks overlap cases' do
+        describe 'invalid if has the same type and has dates overlap' do
+          it { should_not be_valid }
+        end
+
+        context 'has the same type but has dates before the existent one' do
+          let(:start_at) { project.start_at - 1.year }
+          let(:end_at) { project.start_at - 1.second }
+          it { should be_valid }
+        end
+
+        context 'has the same type but has dates after the existent one' do
+          let(:start_at) { project.end_at + 1.second }
+          let(:end_at) { project.end_at + 1.year }
+          it { should be_valid }
+        end
+
+        context 'has a different type' do
+          let(:project_type) { 'a different type' }
+          it { should be_valid }
+        end
       end
     end
   end
