@@ -8,6 +8,7 @@ class Task < ApplicationRecord
 
   def check_deadline
     return if deadline.blank? or project.blank? or project.end_at.blank?
-    errors.add(:deadline, 'must end before the project') if project.end_at < deadline
+    errors.add(:deadline, 'must be before the project ends') if project.end_at < deadline
+    errors.add(:deadline, 'must be after the project starts') if project.start_at > deadline
   end
 end

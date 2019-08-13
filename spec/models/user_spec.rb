@@ -1,22 +1,16 @@
 require 'rails_helper'
 
-user_email = 'test-user-1@example.org'
-
 RSpec.describe User, type: :model do
-  before(:all) do
-    @user = create(:user, email: user_email)
-  end
+  let(:user) { create(:user) }
+  subject { user }
 
-  it 'is valid with valid attributes' do
-    expect(@user).to be_valid
-  end
+  it { should be_valid }
 
   describe 'simple validations' do
     describe '#email' do
       it { should validate_presence_of(:email) }
       it { should validate_uniqueness_of(:email).case_insensitive }
     end
-    it { should validate_presence_of(:password) }
   end
 
   describe 'associations' do

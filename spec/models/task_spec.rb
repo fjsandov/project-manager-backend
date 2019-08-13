@@ -1,13 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe Task, type: :model do
-  before(:all) do
-    @task = create(:task)
-  end
+  let(:project) { create(:project, start_at: DateTime.now.beginning_of_year, end_at: DateTime.now.end_of_year) }
+  let(:deadline) { nil }
+  let(:task) { build(:task, project: project, deadline: deadline) }
+  subject { task }
 
-  it 'is valid with valid attributes' do
-    expect(@task).to be_valid
-  end
+  it { should be_valid }
 
   describe 'simple validations' do
     it { should validate_presence_of(:title) }
@@ -26,10 +25,13 @@ RSpec.describe Task, type: :model do
     it { should belong_to(:project) }
   end
 
-  it 'is invalid if the deadline is after the project ends' do
-    now = DateTime.now
-    project = create(:project, start_at: now.beginning_of_year, end_at: now.end_of_year)
-    task = build(:task, project: project, deadline: now + 2.years)
-    expect(task).not_to be_valid
+  context 'has the deadline after the project ends' do
+    let(:deadline) { project.end_at + 1.year }
+    it { should_not be_valid }
+  end
+
+  context 'has the deadline before the project ends' do
+    let(:deadline) { project.start_at - 1.year }
+    it { should_not be_valid }
   end
 end
