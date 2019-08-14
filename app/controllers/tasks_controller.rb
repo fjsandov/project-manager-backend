@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-  load_and_authorize_resource :project
+  load_and_authorize_resource :project, through: :current_user
   load_and_authorize_resource :task, through: :project
 
   # GET /project/1/tasks
