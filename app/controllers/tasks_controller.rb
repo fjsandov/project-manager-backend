@@ -4,7 +4,6 @@ class TasksController < ApplicationController
 
   # GET /project/1/tasks
   def index
-    @tasks = @project.tasks
     render json: @tasks
   end
 
