@@ -23,7 +23,7 @@ RSpec.describe Task, type: :model do
 
   describe 'associations' do
     it { should belong_to(:project) }
-    it { should have_many(:comments) }
+    it { should have_many(:comments).dependent(:destroy) }
   end
 
   context 'has the deadline after the project ends' do
