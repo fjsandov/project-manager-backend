@@ -14,7 +14,7 @@ RSpec.describe User, type: :model do
   end
 
   describe 'associations' do
-    it { should have_many(:projects) }
+    it { should have_many(:projects).dependent(:destroy) }
   end
 
   describe '#email' do

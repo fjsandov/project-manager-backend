@@ -1,7 +1,7 @@
 class Project < ApplicationRecord
   belongs_to :user
-  has_many :tasks
-  has_many :comments, as: :commentable
+  has_many :tasks, dependent: :destroy
+  has_many :comments, as: :commentable, dependent: :destroy
 
   validates :name, :project_type, :start_at, :end_at, :user_id, presence: true
   validate :check_starts_before_ends, :check_overlap
