@@ -1,7 +1,6 @@
 class TasksController < ApplicationController
-  actions_with_task = %i(show update destroy)
-  before_action :set_project, except: actions_with_task
-  before_action :set_project_and_task, only: actions_with_task
+  load_and_authorize_resource :project, through: :current_user
+  load_and_authorize_resource :task, through: :project
 
   # GET /project/1/tasks
   def index
@@ -40,15 +39,6 @@ class TasksController < ApplicationController
   end
 
   private
-    def set_project
-      @project = current_user.projects.find(params[:project_id])
-    end
-
-    def set_project_and_task
-      @project = current_user.projects.find(params[:project_id])
-      @task = @project.tasks.find(params[:id])
-    end
-
     # Only allow a trusted parameter "white list" through.
     def task_params
       params.require(:task).permit(:title, :description, :priority, :deadline, :status)

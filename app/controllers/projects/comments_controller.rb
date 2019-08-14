@@ -4,6 +4,7 @@ class Projects::CommentsController < CommentsController
   private
   def set_commentable
     @commentable = current_user.projects.find(params[:project_id])
+    authorize! :read, @commentable
   end
 
   def comment_location
