@@ -13,5 +13,7 @@ class Ability
     can %i(read update), User, user_id: user.id
     can :crud, Project, user_id: user.id
     can :crud, Task, project: { user_id: user.id }
+    can %i(create read destroy), Comment, commentable_type: 'Project', commentable_id: user.project_ids
+    can %i(create read destroy), Comment, commentable_type: 'Task', commentable_id: user.projects.map { |project| project.task_ids }.flatten
   end
 end
