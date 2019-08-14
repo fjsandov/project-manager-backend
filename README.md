@@ -1,24 +1,5 @@
-# README
+## Ruby version
+Ruby version used for development: 2.6.0
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## Initial setup
+I used figaro (gem) to setup secrets. To start the project you need to copy [config/application.template.yml](config/application.template.yml) and create a `config/application.yml`. To create secrets you can use `rake secret`.
