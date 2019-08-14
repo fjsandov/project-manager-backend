@@ -32,6 +32,9 @@ gem 'rack-cors'
 gem 'devise'
 gem 'devise-jwt'
 
+# authorization
+gem 'cancancan'
+
 # environment variables
 gem 'figaro'
 
